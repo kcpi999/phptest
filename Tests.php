@@ -1,5 +1,8 @@
 <?php
 
+require_once('Node.php');
+require_once('Tree.php');
+
 $root = new Node("машины");
 $tree = new Tree($root);
 $root->setName("автомобили");
@@ -15,46 +18,47 @@ $xray = $tree->appendNode(new Node('XRay'), $vaz);
 $kalina = $tree->appendNode(new Node('Kalina'), $vaz);
 
 $string = '{
-	root : {
-		name : "автомобили",
-		childs : [
+	"root" : {
+		"name" : "автомобили",
+		"childs" : [
 			{
-				name : "Ford",
-				childs : [
+				"name" : "Ford",
+				"childs" : [
 					{
-						name : "Mustang",
-						childs : []
+						"name" : "Mustang",
+						"childs" : []
 					},
 					{
-						name : "Focus",
-						childs : []
+						"name" : "Focus",
+						"childs" : []
 					}
 				]
 			},
 			{
-				name : "VAZ",
-				childs : [
+				"name" : "VAZ",
+				"childs" : [
 					{
-						name : "XRay",
-						childs : []
+						"name" : "XRay",
+						"childs" : []
 					},
 					{
-						name : "Kalina",
-						childs : []
+						"name" : "Kalina",
+						"childs" : []
 					}
 				]
 			}
 		]
 	}
 }';
-assert($tree->toJSON() === preg_replace("/\s+/", "", $string));
+$expected_json = preg_replace("/\s+/", "", $string);
+assert(($json = $tree->toJSON()) === $expected_json);
 
 $tree->deleteNode($vaz);
 $tree->deleteNode($focus);
 $error;
 try{
 	$tree->deleteNode($xray);
-} catch(NodeNotFoundException $e){
+} catch(NodeNotFoundException $e){    
 	$error = $e;
 }
 assert(isset($error));
@@ -71,20 +75,21 @@ assert($tree->getRoot()->getChildren()[0]->getChildren()[0]->getName() === "Must
 assert($ford->getParent()->getName() === "автомобили");
 
 $string = '{
-	root : {
-		name : "автомобили",
-		childs : [
+	"root" : {
+		"name" : "автомобили",
+		"childs" : [
 			{
-				name : "Ford",
-				childs : [
+				"name" : "Ford",
+				"childs" : [
 					{
-						name : "Mustang",
-						childs : []
+						"name" : "Mustang",
+						"childs" : []
 					}
 				]
 			}
 		]
 	}
-}';   
+}';
 assert($tree->toJSON() === preg_replace("/\s+/", "", $string));
+
 ?>
